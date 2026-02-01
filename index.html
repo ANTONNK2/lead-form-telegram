@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Заявка — lead.antonk2.ru</title>
+</head>
+<body style="font-family:Arial;max-width:900px;margin:40px auto;line-height:1.5">
+  <h1>Лендинг с заявкой → Telegram</h1>
+  <p>Демо: форма отправляет заявку на сервер, а сервер пересылает сообщение в Telegram.</p>
+
+  <form id="f" style="display:grid;gap:12px;max-width:420px">
+    <input name="name" placeholder="Ваше имя" required>
+    <input name="contact" placeholder="Телефон или Telegram" required>
+    <textarea name="message" placeholder="Комментарий" rows="4"></textarea>
+    <button type="submit">Отправить</button>
+  </form>
+
+  <pre id="out" style="margin-top:16px;background:#f5f5f5;padding:12px"></pre>
+
+<script>
+const form = document.getElementById('f');
+const out = document.getElementById('out');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  out.textContent = 'Отправка...';
+
+  const data = Object.fromEntries(new FormData(form).entries());
+  const r = await fetch('/api/lead', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+
+  const j = await r.json().catch(()=>({ok:false}));
+  out.textContent = JSON.stringify(j, null, 2);
+});
+</script>
+</body>
+</html>
